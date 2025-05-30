@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story Lab</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <h1>Story Lab</h1>
+      <p class="tagline">Turn ideas into stories in under 5 minutes</p>
+    </header>
+
+    <main class="main-content">
+      <div id="home-screen" class="screen active">
+        <div class="project-list">
+          <h2>My Stories</h2>
+          <div id="projects-container">
+            <!-- Projects will be loaded here -->
+          </div>
+          <button id="new-story-btn" class="btn btn-primary">
+            <span class="btn-icon">+</span>
+            Start a Story
+          </button>
+        </div>
+      </div>
+
+      <div id="wizard-screen" class="screen">
+        <!-- Wizard Header -->
+        <div class="wizard-header">
+          <button id="wizard-home-btn" class="btn-link">
+            <span class="btn-icon">←</span> Back to Stories
+          </button>
+          <h2 id="wizard-title">New Story</h2>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="wizard-progress">
+          <div class="progress-steps">
+            <div class="step active" data-step="1">
+              <div class="step-number">1</div>
+              <div class="step-label">Idea</div>
+            </div>
+            <div class="step" data-step="2">
+              <div class="step-number">2</div>
+              <div class="step-label">Script</div>
+            </div>
+            <div class="step" data-step="3">
+              <div class="step-number">3</div>
+              <div class="step-label">Visuals</div>
+            </div>
+            <div class="step" data-step="4">
+              <div class="step-number">4</div>
+              <div class="step-label">Cuts</div>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 25%"></div>
+          </div>
+        </div>
+
+        <!-- Wizard Steps -->
+        <div class="wizard-content">
+          <!-- Step 1: Idea -->
+          <div id="step-1" class="wizard-step active">
+            <div class="step-header">
+              <h2>What's your story idea?</h2>
+              <p>Start with a simple one-sentence description</p>
+            </div>
+            <div class="step-content">
+              <div class="form-group">
+                <label for="logline-input">Story Logline</label>
+                <textarea 
+                  id="logline-input" 
+                  placeholder="e.g. A raccoon opens a bakery in space"
+                  rows="3"
+                  maxlength="200"
+                ></textarea>
+                <div class="char-counter">
+                  <span id="logline-counter">0</span>/200
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Script & Outline -->
+          <div id="step-2" class="wizard-step">
+            <div class="step-header">
+              <h2>Outline & Script</h2>
+              <p>We'll create a structured outline for your story</p>
+              <div class="script-toggle-container">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="script-enabled" checked>
+                  <span class="toggle-slider"></span>
+                  <span class="toggle-label">Include script (recommended)</span>
+                </label>
+              </div>
+            </div>
+            <div class="step-content">
+              <div class="outline-controls">
+                <button id="generate-outline-btn" class="btn btn-primary" disabled>
+                  <span class="btn-icon">✨</span>
+                  Generate Outline
+                </button>
+                <button id="regenerate-outline-btn" class="btn btn-secondary" style="display: none;">
+                  <span class="btn-icon">🔄</span>
+                  Regenerate
+                </button>
+                <select id="template-selector" style="display: none;">
+                  <option value="threeAct">Three Act Structure</option>
+                  <option value="heroJourney">Hero's Journey</option>
+                  <option value="simple">Simple Story</option>
+                </select>
+              </div>
+              
+              <div id="outline-container">
+                <div class="outline-placeholder">
+                  <p>📝 Click "Generate Outline" to create your story structure</p>
+                </div>
+              </div>
+              
+              <div id="script-container" class="script-enabled">
+                <div class="script-placeholder">
+                  <p>📄 Script details will appear when outline is generated...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Visuals -->
+          <div id="step-3" class="wizard-step">
+            <div class="step-header">
+              <h2>Visual Generation</h2>
+              <p>Create images for each scene</p>
+              <div class="style-banner" id="global-style-banner">
+                <span class="style-icon">🎨</span>
+                <span class="style-text">Global Style: Not set</span>
+                <button class="style-lock-btn" id="style-lock-btn">Set Style</button>
+              </div>
+            </div>
+            <div class="step-content">
+              <div class="visual-controls">
+                <button id="load-scenes-btn" class="btn btn-primary" disabled>
+                  <span class="btn-icon">🎬</span>
+                  Load Scenes from Outline
+                </button>
+                <button id="key-management-btn" class="btn btn-secondary">
+                  <span class="btn-icon">🔐</span>
+                  Manage API Keys
+                </button>
+              </div>
+              
+              <div id="scenes-container">
+                <div class="scenes-placeholder">
+                  <p>🎬 Generate an outline first, then load scenes for visual creation</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Cuts & Export -->
+          <div id="step-4" class="wizard-step">
+            <div class="step-header">
+              <h2>Simple Cuts & Preview</h2>
+              <p>Arrange your scenes and set timing</p>
+            </div>
+            <div class="step-content">
+              <div class="cuts-editor">
+                <div id="timeline-container">
+                  <div class="timeline-placeholder">
+                    <p>🎞️ Timeline will appear here with your scenes...</p>
+                  </div>
+                </div>
+                <div class="preview-controls">
+                  <button id="preview-btn" class="btn btn-primary" disabled>
+                    <span class="btn-icon">▶</span>
+                    Preview Story
+                  </button>
+                </div>
+                <div class="export-section">
+                  <button id="export-btn" class="btn btn-primary" disabled>
+                    <span class="btn-icon">📦</span>
+                    Download ZIP Bundle
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="wizard-nav">
+          <button id="back-btn" class="btn btn-secondary" disabled>
+            <span class="btn-icon">←</span>
+            Back
+          </button>
+          <div class="nav-middle">
+            <button id="skip-btn" class="btn-link">Skip this step</button>
+          </div>
+          <button id="next-btn" class="btn btn-primary">
+            Next
+            <span class="btn-icon">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="test-screen" class="screen">
+        <h2>Storage Test Interface</h2>
+        <div class="test-controls">
+          <button id="test-create" class="btn">Create Test Project</button>
+          <button id="test-list" class="btn">List Projects</button>
+          <button id="test-clear" class="btn btn-secondary">Clear All</button>
+        </div>
+        <div id="test-output" class="test-output"></div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <button id="nav-home" class="nav-btn active">Home</button>
+      <button id="nav-wizard" class="nav-btn">Wizard</button>
+      <button id="nav-test" class="nav-btn">Test</button>
+    </nav>
+  </div>
+
+  <script src="storage.js"></script>
+  <script src="outline-engine.js"></script>
+  <script src="session-keys.js"></script>
+  <script src="wizard.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

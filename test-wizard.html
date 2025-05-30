@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wizard Test - Story Lab</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .test-button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .test-button:hover {
+      background: #5a6fd8;
+    }
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Story Lab Wizard Test</h1>
+  
+  <div class="test-card">
+    <h2>Quick Test Instructions</h2>
+    <ol>
+      <li><strong>Open Story Lab:</strong> Click the link below</li>
+      <li><strong>Test New Story:</strong> Click "Start a Story" - should open wizard</li>
+      <li><strong>Test Navigation:</strong> Use Next/Back buttons to navigate steps</li>
+      <li><strong>Test Form Input:</strong> Enter logline in Step 1, test character counter</li>
+      <li><strong>Test Script Toggle:</strong> Toggle script on/off in Step 2</li>
+      <li><strong>Test Skip:</strong> Try skip button in Step 2</li>
+      <li><strong>Test Progress:</strong> Verify progress bar and step indicators update</li>
+      <li><strong>Test Mobile:</strong> Resize browser window to test responsive design</li>
+    </ol>
+  </div>
+
+  <div class="test-card">
+    <h2>Test Scenarios</h2>
+    <button class="test-button" onclick="openStoryLab()">Open Story Lab</button>
+    <button class="test-button" onclick="testMobile()">Test Mobile View</button>
+    <button class="test-button" onclick="testDesktop()">Test Desktop View</button>
+  </div>
+
+  <div class="test-card">
+    <h2>Expected Behavior</h2>
+    <ul>
+      <li>✅ Progress bar should update smoothly</li>
+      <li>✅ Step indicators should highlight current step</li>
+      <li>✅ Back button disabled on Step 1</li>
+      <li>✅ Next button disabled until logline entered in Step 1</li>
+      <li>✅ Skip button only visible on Step 2</li>
+      <li>✅ Script toggle should affect container visibility</li>
+      <li>✅ Character counter should update on input</li>
+      <li>✅ Auto-save should trigger every 10 seconds</li>
+      <li>✅ Return to stories should preserve project</li>
+    </ul>
+  </div>
+
+  <script>
+    function openStoryLab() {
+      window.open('index.html', '_blank');
+    }
+
+    function testMobile() {
+      const popup = window.open('index.html', '_blank', 'width=375,height=667');
+      setTimeout(() => {
+        if (popup) {
+          popup.alert('Resize this window to test mobile navigation');
+        }
+      }, 1000);
+    }
+
+    function testDesktop() {
+      window.open('index.html', '_blank', 'width=1200,height=800');
+    }
+
+    // Auto-open for quick testing
+    setTimeout(() => {
+      if (confirm('Auto-open Story Lab for testing?')) {
+        openStoryLab();
+      }
+    }, 1000);
+  </script>
+</body>
+</html>

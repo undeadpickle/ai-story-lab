@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Generation Test - Story Lab</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .test-button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .test-button:hover {
+      background: #5a6fd8;
+    }
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 15px 0;
+    }
+    .status-indicator {
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      margin: 5px;
+      display: inline-block;
+    }
+    .status-success { background: #d4edda; color: #155724; }
+    .status-warning { background: #fff3cd; color: #856404; }
+    .status-info { background: #d1ecf1; color: #0c5460; }
+    .test-scenario {
+      background: #f8f9fa;
+      border-left: 3px solid #667eea;
+      padding: 15px;
+      margin: 10px 0;
+    }
+    .flow-step {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      margin: 5px 0;
+      position: relative;
+    }
+    .flow-step.completed {
+      border-color: #28a745;
+      background: #f8fff9;
+    }
+    .flow-step.current {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+    .step-number {
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎨 Image Generation Interface Test</h1>
+  
+  <div class="test-card">
+    <h2>Test Overview</h2>
+    <p>This tests the complete image generation workflow in Story Lab Step 3.</p>
+    
+    <div class="test-grid">
+      <div class="status-indicator status-info">Session Key Management</div>
+      <div class="status-indicator status-info">Image Generation UI</div>
+      <div class="status-indicator status-info">URL Fallback System</div>
+      <div class="status-indicator status-info">Style Consistency</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <h2>🔑 Session Key Testing</h2>
+    <div class="test-grid">
+      <button class="test-button" onclick="testSessionKeys()">Test Key Dialog</button>
+      <button class="test-button" onclick="testKeyStatus()">Check Key Status</button>
+      <button class="test-button" onclick="testKeyClear()">Clear All Keys</button>
+      <button class="test-button" onclick="testKeyValidation()">Test Validation</button>
+    </div>
+    <div id="key-test-results"></div>
+  </div>
+
+  <div class="test-card">
+    <h2>🖼️ Image Generation Workflow</h2>
+    <p>Complete end-to-end workflow testing:</p>
+    
+    <div class="test-scenario">
+      <h3>Scenario A: First-time User (No API Key)</h3>
+      <ol>
+        <li>Create new story → Generate outline → Go to Step 3</li>
+        <li>Click "Load Scenes from Outline"</li>
+        <li>Try to generate images without API key</li>
+        <li>Key dialog should appear automatically</li>
+        <li>Enter mock key and test generation</li>
+      </ol>
+      <button class="test-button" onclick="runScenarioA()">Run Scenario A</button>
+    </div>
+
+    <div class="test-scenario">
+      <h3>Scenario B: User with Existing Key</h3>
+      <ol>
+        <li>Set API key first</li>
+        <li>Load scenes and generate images</li>
+        <li>Test image selection</li>
+        <li>Test URL fallback option</li>
+      </ol>
+      <button class="test-button" onclick="runScenarioB()">Run Scenario B</button>
+    </div>
+
+    <div class="test-scenario">
+      <h3>Scenario C: Style Consistency Testing</h3>
+      <ol>
+        <li>Set global style lock</li>
+        <li>Generate images for multiple scenes</li>
+        <li>Test style override on individual scenes</li>
+        <li>Verify style indicators display correctly</li>
+      </ol>
+      <button class="test-button" onclick="runScenarioC()">Run Scenario C</button>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <h2>📋 Manual Test Checklist</h2>
+    <p>Open Story Lab and verify these manually:</p>
+    
+    <div class="flow-step">
+      <span class="step-number">1</span>
+      <strong>Basic Flow:</strong> Create story → Generate outline → Step 3 → Load scenes
+    </div>
+    
+    <div class="flow-step">
+      <span class="step-number">2</span>
+      <strong>Key Management:</strong> Click "Manage API Keys" → Test key dialog
+    </div>
+    
+    <div class="flow-step">
+      <span class="step-number">3</span>
+      <strong>Image Generation:</strong> Enter prompts → Generate (with/without key)
+    </div>
+    
+    <div class="flow-step">
+      <span class="step-number">4</span>
+      <strong>URL Fallback:</strong> Click "Paste Image URL" → Add custom image
+    </div>
+    
+    <div class="flow-step">
+      <span class="step-number">5</span>
+      <strong>Image Selection:</strong> Click different image options → Verify selection
+    </div>
+    
+    <div class="flow-step">
+      <span class="step-number">6</span>
+      <strong>Prompt Enhancement:</strong> Use ✨ and 🔄 buttons on prompts
+    </div>
+    
+    <div class="flow-step">
+      <span class="step-number">7</span>
+      <strong>Style System:</strong> Set global style → Test scene overrides
+    </div>
+    
+    <div class="flow-step">
+      <span class="step-number">8</span>
+      <strong>Mobile Testing:</strong> Test on narrow viewport (375px)
+    </div>
+  </div>
+
+  <div class="test-card">
+    <h2>🧪 Expected Behavior</h2>
+    <div class="test-grid">
+      <div class="status-indicator status-success">✅ Load Scenes button enables after outline</div>
+      <div class="status-indicator status-success">✅ Generate button disabled without key</div>
+      <div class="status-indicator status-success">✅ Key dialog auto-opens when needed</div>
+      <div class="status-indicator status-success">✅ Mock images generate in 2 seconds</div>
+      <div class="status-indicator status-success">✅ URL input validates properly</div>
+      <div class="status-indicator status-success">✅ Image selection highlights correctly</div>
+      <div class="status-indicator status-success">✅ Style indicators show current state</div>
+      <div class="status-indicator status-success">✅ Touch targets ≥48px on mobile</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <h2>🚀 Quick Test</h2>
+    <button class="test-button" onclick="openStoryLab()">Open Story Lab</button>
+    <button class="test-button" onclick="openStoryLabMobile()">Open Mobile View</button>
+    <button class="test-button" onclick="runAllTests()">Run All Tests</button>
+    
+    <div id="test-results" style="margin-top: 20px;"></div>
+  </div>
+
+  <script>
+    function testSessionKeys() {
+      const results = document.getElementById('key-test-results');
+      results.innerHTML = `
+        <div class="status-indicator status-info">
+          🔑 Session key management test completed.
+          Check console for sessionKeys object and modal functionality.
+        </div>
+      `;
+      
+      // Test if sessionKeys is available
+      if (typeof window.sessionKeys !== 'undefined') {
+        console.log('✅ SessionKeys object available');
+        console.log('✅ Supported providers:', window.sessionKeys.supportedProviders);
+      } else {
+        console.log('❌ SessionKeys object not found');
+      }
+    }
+
+    function testKeyStatus() {
+      const results = document.getElementById('key-test-results');
+      
+      if (typeof window.sessionKeys !== 'undefined') {
+        const imageStatus = window.sessionKeys.getKeyStatus('imageGeneration');
+        const videoStatus = window.sessionKeys.getKeyStatus('videoGeneration');
+        
+        results.innerHTML = `
+          <div class="status-indicator status-success">
+            Image Gen: ${imageStatus.display}
+          </div>
+          <div class="status-indicator status-success">
+            Video Gen: ${videoStatus.display}
+          </div>
+        `;
+      } else {
+        results.innerHTML = '<div class="status-indicator status-warning">SessionKeys not loaded</div>';
+      }
+    }
+
+    function testKeyClear() {
+      if (typeof window.sessionKeys !== 'undefined') {
+        window.sessionKeys.clearAllKeys();
+        testKeyStatus();
+      }
+    }
+
+    function testKeyValidation() {
+      const results = document.getElementById('key-test-results');
+      results.innerHTML = `
+        <div class="status-indicator status-info">
+          🧪 Key validation test: Check that empty keys are rejected,
+          invalid URLs fail gracefully, and valid keys are stored correctly.
+        </div>
+      `;
+    }
+
+    function runScenarioA() {
+      alert('Scenario A Test:\n\n1. Open Story Lab\n2. Create new story with logline\n3. Generate outline in Step 2\n4. Go to Step 3\n5. Click "Load Scenes from Outline"\n6. Try to generate without API key\n7. Verify key dialog appears\n8. Enter mock key and test generation');
+    }
+
+    function runScenarioB() {
+      alert('Scenario B Test:\n\n1. Click "Manage API Keys"\n2. Add image generation key\n3. Load scenes in Step 3\n4. Generate images (should work)\n5. Test image selection\n6. Try "Paste Image URL" option\n7. Verify both methods work');
+    }
+
+    function runScenarioC() {
+      alert('Scenario C Test:\n\n1. Go to Step 3\n2. Click "Set Style" in global style banner\n3. Load scenes\n4. Verify all scenes show "Global Style"\n5. Edit a scene prompt\n6. Check if style overrides work\n7. Verify style indicators update');
+    }
+
+    function openStoryLab() {
+      window.open('index.html', '_blank');
+    }
+
+    function openStoryLabMobile() {
+      window.open('index.html', '_blank', 'width=375,height=667');
+    }
+
+    function runAllTests() {
+      const results = document.getElementById('test-results');
+      
+      let testResults = '<h3>🧪 Automated Test Results</h3>';
+      
+      // Test 1: Check if all required scripts are loaded
+      const requiredGlobals = ['storyStorage', 'outlineEngine', 'sessionKeys', 'storyWizard'];
+      requiredGlobals.forEach(global => {
+        if (typeof window[global] !== 'undefined') {
+          testResults += `<div class="status-indicator status-success">✅ ${global} loaded</div>`;
+        } else {
+          testResults += `<div class="status-indicator status-warning">❌ ${global} missing</div>`;
+        }
+      });
+
+      // Test 2: Check CSS classes exist
+      const requiredClasses = ['.visual-scene-card', '.image-generation-section', '.modal-backdrop'];
+      requiredClasses.forEach(className => {
+        const rule = Array.from(document.styleSheets).some(sheet => {
+          try {
+            return Array.from(sheet.cssRules).some(rule => 
+              rule.selectorText && rule.selectorText.includes(className.substring(1))
+            );
+          } catch (e) {
+            return false;
+          }
+        });
+        
+        if (rule) {
+          testResults += `<div class="status-indicator status-success">✅ ${className} styles loaded</div>`;
+        } else {
+          testResults += `<div class="status-indicator status-warning">❌ ${className} styles missing</div>`;
+        }
+      });
+
+      // Test 3: Check HTML elements exist
+      const requiredElements = ['#load-scenes-btn', '#key-management-btn', '#global-style-banner'];
+      requiredElements.forEach(selector => {
+        const element = document.querySelector(selector);
+        if (element) {
+          testResults += `<div class="status-indicator status-success">✅ ${selector} element found</div>`;
+        } else {
+          testResults += `<div class="status-indicator status-warning">❌ ${selector} element missing</div>`;
+        }
+      });
+
+      testResults += `
+        <div style="margin-top: 15px; padding: 15px; background: #e3f2fd; border-radius: 4px;">
+          <strong>Next Steps:</strong><br>
+          1. Open Story Lab in new tab<br>
+          2. Follow the manual test checklist above<br>
+          3. Test on mobile viewport (375px width)<br>
+          4. Verify all image generation features work
+        </div>
+      `;
+      
+      results.innerHTML = testResults;
+    }
+
+    // Auto-run basic checks
+    setTimeout(() => {
+      testSessionKeys();
+      testKeyStatus();
+    }, 500);
+  </script>
+</body>
+</html>

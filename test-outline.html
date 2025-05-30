@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Outline Engine Test - Story Lab</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .test-button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .test-button:hover {
+      background: #5a6fd8;
+    }
+    .logline-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    .result-container {
+      background: #f8f9fa;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+      white-space: pre-wrap;
+      font-family: monospace;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .scene-preview {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      margin: 5px 0;
+    }
+    .scene-title {
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 5px;
+    }
+    .scene-content {
+      color: #666;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .scene-prompt {
+      font-style: italic;
+      color: #999;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Outline Engine Test</h1>
+  
+  <div class="test-card">
+    <h2>Quick Test</h2>
+    <input type="text" id="logline-input" class="logline-input" 
+           placeholder="Enter your story logline (e.g. A raccoon opens a bakery in space)"
+           value="A detective cat solves mysteries in a steampunk city">
+    <br>
+    <button class="test-button" onclick="testGeneration()">Generate Outline</button>
+    <button class="test-button" onclick="testTemplates()">Test All Templates</button>
+    <button class="test-button" onclick="runBatchTest()">Batch Test Examples</button>
+    <button class="test-button" onclick="clearResults()">Clear Results</button>
+  </div>
+
+  <div class="test-card">
+    <h2>Test Examples</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
+      <button class="test-button" onclick="testLogline('A raccoon opens a bakery in space')">🦝 Space Bakery</button>
+      <button class="test-button" onclick="testLogline('A robot learns to paint watercolors')">🤖 Robot Artist</button>
+      <button class="test-button" onclick="testLogline('Dragons start a delivery service')">🐲 Dragon Delivery</button>
+      <button class="test-button" onclick="testLogline('A wizard opens a coffee shop')">☕ Wizard Cafe</button>
+      <button class="test-button" onclick="testLogline('Time travelers run a library')">📚 Time Library</button>
+      <button class="test-button" onclick="testLogline('A superhero becomes a teacher')">🦸 Super Teacher</button>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <h2>Results</h2>
+    <div id="results-container">
+      <p>Click a test button to see outline generation results...</p>
+    </div>
+  </div>
+
+  <script src="outline-engine.js"></script>
+  <script>
+    function testGeneration() {
+      const logline = document.getElementById('logline-input').value.trim();
+      if (!logline) {
+        alert('Please enter a logline first!');
+        return;
+      }
+      testLogline(logline);
+    }
+
+    function testLogline(logline) {
+      const container = document.getElementById('results-container');
+      
+      try {
+        const outline = window.outlineEngine.generateOutline(logline);
+        const scripts = window.outlineEngine.generateScriptContent(outline);
+        
+        let html = `<h3>📝 Outline for: "${logline}"</h3>`;
+        html += `<p><strong>Template:</strong> ${outline.template} | <strong>Genre:</strong> ${outline.analysis.genre} | <strong>Character:</strong> ${outline.analysis.character.name}</p>`;
+        
+        outline.scenes.forEach((scene, index) => {
+          html += `
+            <div class="scene-preview">
+              <div class="scene-title">${index + 1}. ${scene.title}</div>
+              <div class="scene-content">${scene.content}</div>
+              <div class="scene-prompt">Visual: ${scene.visualPrompt}</div>
+            </div>
+          `;
+        });
+
+        html += `<h4>📄 Script Preview (First Scene)</h4>`;
+        if (scripts.length > 0) {
+          html += `<div class="result-container">${scripts[0].script}</div>`;
+        }
+        
+        html += '<hr style="margin: 20px 0;">';
+        container.innerHTML = html + container.innerHTML;
+        
+      } catch (error) {
+        container.innerHTML = `<p style="color: red;">Error: ${error.message}</p>` + container.innerHTML;
+      }
+    }
+
+    function testTemplates() {
+      const logline = document.getElementById('logline-input').value.trim() || 'A detective cat solves mysteries';
+      const templates = ['simple', 'threeAct', 'heroJourney'];
+      
+      let html = `<h3>🎭 Template Comparison: "${logline}"</h3>`;
+      
+      templates.forEach(template => {
+        try {
+          const outline = window.outlineEngine.regenerateWithTemplate(logline, template);
+          html += `<h4>${outline.template} (${outline.scenes.length} scenes)</h4>`;
+          outline.scenes.forEach((scene, index) => {
+            html += `<div style="margin: 5px 0; padding: 5px; background: #f0f0f0; border-radius: 3px;">
+              <strong>${index + 1}. ${scene.title}:</strong> ${scene.content}
+            </div>`;
+          });
+        } catch (error) {
+          html += `<p style="color: red;">Error with ${template}: ${error.message}</p>`;
+        }
+      });
+      
+      html += '<hr style="margin: 20px 0;">';
+      document.getElementById('results-container').innerHTML = html + document.getElementById('results-container').innerHTML;
+    }
+
+    function runBatchTest() {
+      const testCases = [
+        'A robot learns to paint',
+        'Dragons deliver pizza',
+        'A wizard runs a coffee shop',
+        'Time travelers open a library',
+        'A detective cat solves crimes',
+        'An alien chef comes to Earth',
+        'A superhero becomes a teacher',
+        'A fairy starts a tech company',
+        'Pirates open a daycare center',
+        'A ghost writes a blog'
+      ];
+
+      let html = '<h3>🚀 Batch Test Results</h3>';
+      
+      testCases.forEach(logline => {
+        try {
+          const outline = window.outlineEngine.generateOutline(logline);
+          html += `<div style="margin: 10px 0; padding: 10px; background: #f9f9f9; border-left: 3px solid #667eea;">
+            <strong>"${logline}"</strong><br>
+            Template: ${outline.template} | Genre: ${outline.analysis.genre} | Scenes: ${outline.scenes.length}<br>
+            Character: ${outline.analysis.character.name} | Action: ${outline.analysis.action}
+          </div>`;
+        } catch (error) {
+          html += `<div style="color: red;">❌ "${logline}": ${error.message}</div>`;
+        }
+      });
+      
+      html += '<hr style="margin: 20px 0;">';
+      document.getElementById('results-container').innerHTML = html + document.getElementById('results-container').innerHTML;
+    }
+
+    function clearResults() {
+      document.getElementById('results-container').innerHTML = '<p>Results cleared. Click a test button to see outline generation results...</p>';
+    }
+
+    // Auto-run a demo
+    setTimeout(() => {
+      testLogline('A detective cat solves mysteries in a steampunk city');
+    }, 500);
+  </script>
+</body>
+</html>
